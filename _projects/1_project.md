@@ -1,7 +1,7 @@
 ---
 layout: page
-title: 3D object detection from raw point clouds.
-description: Reproduce the results of the "Deep Hough Voting" neural network on ScanNet and SUNRGB-D.
+title: 3D object detection
+description: Reproduce the results of "Deep Hough Voting" on ScanNet and SUNRGB-D.
 img: assets/img/project_deephoughvoting.jpg
 importance: 1
 category: work

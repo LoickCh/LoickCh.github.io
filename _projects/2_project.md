@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Correlate objects and their effects in videos.
-description: Reproduce the results of the "Omnimatte" neural network on the DAVIS dataset and on Youtube videos.
+title: Correlate objects and their effects
+description: Reproduce the results of "Omnimatte" on the DAVIS dataset and on custom Youtube videos.
 img: assets/img/project_omnimatte.jpg
 importance: 1
 category: work

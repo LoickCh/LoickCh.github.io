@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Reconstruct 3D meshes using raw point clouds.
+title: 3D reconstruction.
 description: Reproduce the results of various papers to reconstruct 3D meshes.
 img: assets/img/project_recvis.jpg
 importance: 1

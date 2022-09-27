@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='https://www.master-mva.com/'>Affiliations</a>.
+subtitle: Affiliations: <a href='https://www.valeo.com/en/valeo-ai/'> Valeo AI </a>, <a href='https://ecoledesponts.fr/en'> ENPC</a>, <a href='https://www.master-mva.com/'> MVA</a>.
 
 profile:
   align: right

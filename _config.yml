@@ -78,9 +78,9 @@ panelbear_analytics:  # panelbear analytics site ID (format: XXXXXXXXX)
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: Deep Learning & Python  # blog_name will be displayed in your blog page
-blog_nav_title: blog  # your blog must have a title for it to be displayed in the nav bar
-blog_description:  This blog has two objectives, to present articles on Deep Learning and to give Python tips for coding.
+blog_name: # blog_name will be displayed in your blog page
+blog_nav_title:  # your blog must have a title for it to be displayed in the nav bar
+blog_description: 
 permalink:  /blog/:year/:title/
 
 # Pagination

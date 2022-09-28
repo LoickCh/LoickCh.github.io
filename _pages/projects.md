@@ -2,7 +2,7 @@
 layout: page
 title: projects
 permalink: /projects/
-description: Relevant academic deep learning projects developped during my master. 
+description: Relevant academic deep learning projects done during my master. 
 nav: true
 nav_order: 1
 display_categories: [work, fun]

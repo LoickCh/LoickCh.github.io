@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: Affiliations: <a href='https://www.valeo.com/en/valeo-ai/'> Valeo AI </a>, <a href='https://ecoledesponts.fr/en'> ENPC</a>, <a href='https://www.master-mva.com/'> MVA</a>.
+subtitle: Affiliations <a href='https://www.valeo.com/en/valeo-ai/'> Valeo AI </a>, <a href='http://ecoledesponts.fr'> ENPC </a>, <a href='https://www.master-mva.com/'> MVA </a>.
 
 profile:
   align: right
@@ -16,5 +16,6 @@ selected_papers: false # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
 
-**Few words**:
-I’m Loïck, a deep learning Master student. I have just finished the Master of computer science (MVA) of ENS Paris-Saclay and I am currently working at Valeo AI.
+Hello, I’m Loïck, a deep learning Master student. I have just finished the Master of computer science (MVA) of ENS Paris-Saclay and I am currently working at Valeo AI as a Deep Learning Research intern.
+
+I am looking for an internship to validate my engineering school and I would like to continue in thesis in a deep learning related field.

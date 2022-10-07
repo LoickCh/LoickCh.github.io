@@ -64,7 +64,6 @@ class Embedder:
         out=[]
         
         for mode in self.embed.keys():
-            print(x[...,dims[mode]].shape)
             out.append(self.embed[mode](x[...,dims[mode]]))            
         return out
 ```
@@ -94,7 +93,7 @@ outputing density (no activation) and for the final layer (sigmoid).
 class NeRFModel(nn.Module):
     def __init__(self,
                  features_in=[60,256,256,256,256,256+60,256,256,256,256+16,128], 
-                 features_out=[256,256,256,256,256,256,256,256,256,128,3],
+                 features_out=[256,256,256,256,256,256,256,256,256+1,128,3],
                  skip_x=5,skip_views=9,
                 embedder_kwargs={'L':{'pts':10,'views':4} }):
         super().__init__()
@@ -104,29 +103,37 @@ class NeRFModel(nn.Module):
         for n in range(len_f):
             block=[]
             block.append(nn.Linear(features_in[n],features_out[n]))
-
-            if (n!=len_f) and (n!=len_f-2):
+            if (n!=len_f-1) and (n!=len_f-3):
                 block.append(nn.ReLU())
-            elif n==len_f: # rgb
+            elif n==len_f-1:
                 block.append(nn.Sigmoid())
-            elif n==len_f-2: # density
+            else:
                 block.append(nn.Identity())
             core.append(nn.Sequential(*block))
         self.core=nn.Sequential(*core)
         
         self.skip={'pts':skip_x,'views':skip_views}
-        self.layer_density=nn.Linear(features_in[-3],1)
-        self.embedder=Embedder()
+        self.Embedder=Embedder()
         
     def forward(self, x):
-        input_pts, input_views=self.embedder(x)
-        rgb=input_pts
+        input_pts, input_views=self.Embedder(x)
+        z=input_pts
         for l in range(len(self.core)):
             if l==self.skip['pts']:
-                rgb=torch.cat([rgb, input_pts], dim=-1)
+                z=torch.cat([z, input_pts], dim=-1)
             elif l==self.skip['views']:
-                sigma=self.layer_density(rgb)
-                rgb=torch.cat([rgb, input_views], dim=-1)
-            rgb=self.core[l](rgb)
+                sigma=F.relu(z[...,-1:])
+                z=torch.cat([z[...,:-1], input_views], dim=-1)
+            z=self.core[l](z)
+        rgb=z
         return rgb,sigma
 ```
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        {% include figure.html path="assets/img/Blog/2022-10-04/NeRF_architecture_params.png" title="Decoder architecture" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    Number of parameters for the decoder.
+</div>

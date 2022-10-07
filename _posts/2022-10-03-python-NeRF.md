@@ -70,12 +70,12 @@ for any real-valued random variable *X* by:
 $$F_X(x)= \mathbb{P}(X\leq x)$$
 
 ```python 
-def sample_pdf(z_mid, weights, N_importance):
+def sample_pdf(z_vals, weights, N_importance, det=False, eps=1e-5):
     N_rays, N_samples_ = weights.shape
     
     # 1. Construct the probability distribution associated with weights.
-    weights = weights + 1e-5 
-    pdf = weights / torch.sum(weights, -1, keepdim=True) 
+    weights = weights + eps
+    pdf = weights / torch.sum(weights, -1, keepdim=True)
     cdf = torch.cumsum(pdf, -1)
     cdf = torch.cat([torch.zeros_like(cdf[: ,:1]), cdf], -1)
 ```
@@ -88,20 +88,20 @@ $$ \text{If } Y \sim \mathcal{U}[0,1], \text{ then } F^{-1}(Y) \text{ is distrib
 ```python
     [...]
     # 2. Sample points
-    u = torch.rand(N_rays, N_importance, device=z_mid.device) # uniform sample between 0 and 1.
+    u = torch.rand(N_rays, N_importance, device=z_vals.device) # uniform sample between 0 and 1.
     u = u.contiguous()
 
-    inds = torch.searchsorted(cdf, u, right=True) 
+    inds = torch.searchsorted(cdf, u, right=True)
     below = torch.clamp_min(inds-1, 0)
     above = torch.clamp_max(inds, N_samples_)
 
     inds_sampled = torch.stack([below, above], -1).view(N_rays, 2*N_importance)
     cdf_g = torch.gather(cdf, 1, inds_sampled).view(N_rays, N_importance, 2)
-    z_mid_g = torch.gather(z_mid, 1, inds_sampled).view(N_rays, N_importance, 2)
+    z_vals_g = torch.gather(z_vals, 1, inds_sampled).view(N_rays, N_importance, 2)
 
     denom = cdf_g[...,1]-cdf_g[...,0]
-    denom[denom< 1e-5] = 1 
+    denom[denom<eps] = 1 
     
-    return z_mid_g[...,0] + (u-cdf_g[...,0])/denom * (z_mid_g[...,1]-z_mid_g[...,0]) 
+    return z_vals_g[...,0] + (u-cdf_g[...,0])/denom * (z_vals_g[...,1]-z_vals_g[...,0])
 ```
 

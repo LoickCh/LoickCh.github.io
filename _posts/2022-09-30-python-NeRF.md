@@ -74,11 +74,11 @@ def get_rays(labels):
     extrinsic=labels[:,:16].reshape(B,4,4) # B,4,4
     
     # Get focal length and principal point coordinates
-    cy,cx=intrinsic[0,1,2].int().item(),intrinsic[0,0,2].int().item()
+    cy=intrinsic[0,1,2].int().item()
+    cx=intrinsic[0,0,2].int().item()
     focal=intrinsic[:,0,0].unsqueeze(-1)
 
     # The principal point is often localted at a middle location.
-    H,W=2*cy,2*cx
     N_rays=H*W
 ```
 
@@ -92,11 +92,10 @@ Now we have to create a camera grid where one point correspond to one pixel on t
     # 1. Set camera grid
     # -> Sensor discretization
     uv=torch.stack(torch.meshgrid(torch.linspace(0,W-1,W),
-                   torch.linspace(0,H-1,H),indexing='xy'))
+                   torch.linspace(0,H-1,H),indexing='xy')).to(labels.device)
     
     uv = uv.reshape(2, -1) 
     uv = uv.unsqueeze(0).repeat(B, 1, 1)
-    
     x = uv[:,0,:].view(B, N_rays)
     y = uv[:,1,:].view(B, N_rays)
     z = torch.ones((B,N_rays), device=uv.device)
@@ -127,10 +126,11 @@ $$
 
 ```python 
     [...]
+    
     # 2. Multiply by the invert of the intrisic matrix.
     x = (x - 0.5*W) / focal
     y = (y - 0.5*H) / focal
-    cam_rel_points=torch.stack((x,y,z,torch.ones_like(z)), dim=1)
+    cam_rel_points=torch.stack((x,-y,-z), dim=1)
 ```
 
 4. Apply the extrinsic
@@ -140,8 +140,9 @@ Finally we need to apply camera to world matrix multiplication in order to chang
 
 ```python 
     [...]
+    
     # 3. Apply camera to world transformation (+ remove homogeneous coordinates)
-    world_rel_points = torch.bmm(extrinsic, cam_rel_points)[:, :3, :]
+    world_rel_points = torch.bmm(extrinsic[:,:3,:3], cam_rel_points)
 ```
 
 5. Get ray origins and directions
@@ -151,7 +152,7 @@ Ray origins *o* and ray directions *d* are defined such that for any ray *r*: $r
 ```python 
     [...]
     # Prepare outputs
-    ray_d = (world_rel_points - extrinsic[:, :3, -1:]).permute((0,2,1))
+    ray_d = world_rel_points.permute((0,2,1))
     ray_o = extrinsic[:, :3, 3].unsqueeze(1).repeat(1, ray_d.shape[1], 1)
     return ray_o, ray_d
 ```

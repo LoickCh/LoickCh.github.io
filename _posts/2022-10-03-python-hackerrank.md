@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  HackerRank
-date:   2022-09-29
+date:   2022-10-03
 description: What did I learn solving all Hackerrank's Python questions ?
 tags: python
 categories: sample-posts

@@ -1,9 +1,9 @@
 ---
 layout: post
 title:  NeRF in PyTorch (1/4)
-date:   2022-09-29
+date:   2022-09-30
 description: How to build a NeRF neural network from scratch using PyTorch.
-tags: python
+tags: implementation
 categories: sample-posts
 ---
 

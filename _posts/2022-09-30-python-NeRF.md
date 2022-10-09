@@ -48,7 +48,7 @@ $$
 
 The first step of building a NeRF neural network is to get ray directions (image plane) and ray origins (origin of the camera). To do so, we need to create a camera grid, to multiply it by the invert of the intrisic matrix and before to multiply it by the extrinsic matrix. Let us explain how can we code it.
 
-1. Parameters representation
+### 1. Parameters representation
 
 A common way to represent the 25 parameters is to flatten the tensor. The first 16 parameters represent the extrinsic parameters and the last the intrinsic parameters. In addition, there often are assumptions on the intrinsic parameters: skew is often set to 0, focal length on x and on y are identical, and the principal point is at the middle of the resolution. That is why we often have the following representation:
 $$
@@ -84,14 +84,14 @@ def get_rays(labels):
     N_rays=H*W
 ```
 
-2. Create a camera grid-pixel correspondance
+### 2. Create a camera grid-pixel correspondance
 
 Now we have to create a camera grid where one point correspond to one pixel on the image. To do it, we generate a grid using *torch.meshgrid*. Then, we need to go from 2D coordinates to 3D, so we use computer graphic conventions localising the image plane at $$z=1$$.
 
 ```python 
     [...]
 
-    # 1. Set camera grid
+    # ### Set camera grid
     # -> Sensor discretization
     uv=torch.stack(torch.meshgrid(torch.linspace(0,W-1,W),
                    torch.linspace(0,H-1,H),indexing='xy')).to(labels.device)
@@ -103,7 +103,7 @@ Now we have to create a camera grid where one point correspond to one pixel on t
     z = torch.ones((B,N_rays), device=uv.device)
 ```
 
-3. Invert the intrinsic
+### 3. Invert the intrinsic
 
 Now, we have unlocated 3D points. Then, we need to multiply by the inverse intrinsic matrix. Since it is a triangular upper matrix, it is equivalent to apply the following transformation:
 
@@ -129,13 +129,13 @@ $$
 ```python 
     [...]
     
-    # 2. Multiply by the invert of the intrisic matrix.
+    # ### Multiply by the invert of the intrisic matrix.
     x = (x - 0.5*W) / focal
     y = (y - 0.5*H) / focal
     cam_rel_points=torch.stack((x,-y,-z), dim=1)
 ```
 
-4. Apply the extrinsic
+### 4. Apply the extrinsic
 
 Finally we need to apply camera to world matrix multiplication in order to change the point of view of the image. It is a simple batch matrix multiplication.
 
@@ -143,11 +143,11 @@ Finally we need to apply camera to world matrix multiplication in order to chang
 ```python 
     [...]
     
-    # 3. Apply camera to world transformation (+ remove homogeneous coordinates)
+    # ### Apply camera to world transformation (+ remove homogeneous coordinates)
     world_rel_points = torch.bmm(extrinsic[:,:3,:3], cam_rel_points)
 ```
 
-5. Get ray origins and directions
+### 5. Get ray origins and directions
 
 Ray origins *o* and ray directions *d* are defined such that for any ray *r*: $$r = o + f*d$$ where f is the depth (often bounded between a far and a near plane).
 
@@ -172,7 +172,7 @@ In the NeRF paper, there are two different sampling techniques: coarse sampling 
 
 <p> <br> </p>
 
-1. Coarse sampling
+### 1. Coarse sampling
 
 The coarse pass samples the points uniformly along rays. 
 First, we uniformly subdivide the rays, and then select a depth in each bin created.
@@ -181,7 +181,7 @@ First, we uniformly subdivide the rays, and then select a depth in each bin crea
 def sample_stratified(self, ray_oray_o, ray_start, ray_end, N_samples):
         B, N_rays, *_ = ray_o.shape
 
-        # 1. Subdivide rays
+        # ### Subdivide rays
         depth = torch.linspace(ray_start, ray_end, N_samples, device=ray_o.device)
         depth=depth.reshape(1, 1, N_samples, 1).repeat(B, N_rays, 1, 1)
         
@@ -198,7 +198,7 @@ density areas which might correspond to surface regions.
 
 <p> <br> </p>
 
-2. Fine sampling
+### 2. Fine sampling
 
 To perform fine sampling, we need to have depths *z_vals* from the coarse sample 
 and point weights *weights* obtained after ray marchering on coarse points. 
@@ -217,7 +217,7 @@ $$F_X(x)= \mathbb{P}(X\leq x)$$
 def sample_pdf(z_vals, weights, N_importance, det=False, eps=1e-5):
     N_rays, N_samples_ = weights.shape
     
-    # 1. Construct the probability distribution associated with weights.
+    # ### Construct the probability distribution associated with weights.
     weights = weights + eps
     pdf = weights / torch.sum(weights, -1, keepdim=True)
     cdf = torch.cumsum(pdf, -1)
@@ -231,7 +231,7 @@ $$ \text{If } Y \sim \mathcal{U}[0,1], \text{ then } F^{-1}(Y) \text{ is distrib
 
 ```python
     [...]
-    # 2. Sample points
+    # ### Sample points
     u = torch.rand(N_rays, N_importance, device=z_vals.device) # uniform sample between 0 and 1.
     u = u.contiguous()
 
@@ -259,7 +259,7 @@ So far, we have only used computer graphics techniques to model cameras, rays an
 points. Now, we need to find for each point, an estimated color and an estimated depth.
 To do it, we will use two different modules: one embedder and one decoder.
 
-1. Embedder.
+### 1. Embedder.
 
 Embedding consists on mapping inputs to a higher dimensional space 
 using high frequency functions before passing them to the network. The idea behind is to
@@ -303,7 +303,7 @@ class Embedder:
 
 <p> <br> </p>
 
-2. Decoder.
+### 2. Decoder.
 
 Decoder takes as inputs positional and viewing direction embedding, and outputs estimated
 color and density. The architecture is composed of fully connected layers, with 

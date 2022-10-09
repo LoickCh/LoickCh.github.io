@@ -20,13 +20,13 @@ State: in progress
 
 <p> <br> </p>
 
-## Parameterised cameras
+## I. Parameterised cameras
 
 A NeRF dataset can be seen as a collection of images with their 25 camera parameters. The 25 camera parameters are composed of 16 extrinsic parameters and 9 intrinsic parameters. 
 
-The extrinsic matrix (or camera to world matrix *c2w*) can be written using a rotation matrix $(R_{i,j})_{(i,j) \in \{1,2,3\}}$ and a translation matrix $(T_{i})_{(i) \in \{1,2,3\}}$. The rotation matrix can also being represented using three eulerian angles, aircraft principal angles (yaw, pitch, roll) or another representation.
+The extrinsic matrix (or camera to world matrix *c2w*) can be written using a rotation matrix $$(R_{i,j})_{(i,j) \in \{1,2,3\}}$$ and a translation matrix $$(T_{i})_{(i) \in \{1,2,3\}}$$. The rotation matrix can also being represented using three eulerian angles, aircraft principal angles (yaw, pitch, roll) or another representation.
 
-The intrinsic matrix (K) can be written using the focal length ($f_x, f_y$), the principal point coordinates ($c_x,c_y$) and the skew $s_k$.
+The intrinsic matrix (K) can be written using the focal length ($$f_x, f_y$$), the principal point coordinates ($$c_x,c_y$$) and the skew $$s_k$$.
 
 $$
 c2w=
@@ -86,7 +86,7 @@ def get_rays(labels):
 
 2. Create a camera grid-pixel correspondance
 
-Now we have to create a camera grid where one point correspond to one pixel on the image. To do it, we generate a grid using *torch.meshgrid*. Then, we need to go from 2D coordinates to 3D, so we use computer graphic conventions localising the image plane at $z=1$.
+Now we have to create a camera grid where one point correspond to one pixel on the image. To do it, we generate a grid using *torch.meshgrid*. Then, we need to go from 2D coordinates to 3D, so we use computer graphic conventions localising the image plane at $$z=1$$.
 
 ```python 
     [...]
@@ -149,7 +149,7 @@ Finally we need to apply camera to world matrix multiplication in order to chang
 
 5. Get ray origins and directions
 
-Ray origins *o* and ray directions *d* are defined such that for any ray *r*: $r = o + f*d$ where f is the depth (often bounded between a far and a near plane).
+Ray origins *o* and ray directions *d* are defined such that for any ray *r*: $$r = o + f*d$$ where f is the depth (often bounded between a far and a near plane).
 
 ```python 
     [...]
@@ -163,11 +163,11 @@ Ray origins *o* and ray directions *d* are defined such that for any ray *r*: $r
 
 <p> <br> </p>
 
-## Sample points
+## II. Sample points
 
 Once we have modelled the cameras, we need to sample the 3D space. 
 To do it, we sample points along rays *r* defined with the camera origin *o*, 
-the camera directions *d* and depths *t*: $r=o+t.d$ 
+the camera directions *d* and depths *t*: $$r=o+t.d$$ 
 In the NeRF paper, there are two different sampling techniques: coarse sampling and fine sampling.
 
 <p> <br> </p>
@@ -253,7 +253,7 @@ $$ \text{If } Y \sim \mathcal{U}[0,1], \text{ then } F^{-1}(Y) \text{ is distrib
 
 <p> <br> </p>
 
-## Decoder architecture.
+## III. Decoder architecture.
 
 So far, we have only used computer graphics techniques to model cameras, rays and to sample
 points. Now, we need to find for each point, an estimated color and an estimated depth.
@@ -362,7 +362,7 @@ This model has 593.924 parameters.
 
 <p> <br> </p>
 
-## Ray marcher
+## IV. Ray marcher
 
 After decoding points, we obtain color and density of points. Since one pixel corresponds
 to one ray, we need to find a way to assign a ray color and a ray density using the 

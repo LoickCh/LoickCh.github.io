@@ -1,13 +1,15 @@
 ---
 layout: post
-title:  HackerRank
+title:  HackerRank (Python)
 date:   2022-10-03
 description: What did I learn solving all Hackerrank's Python questions ?
 tags: python
-categories: sample-posts
+categories: challenge
 ---
 
-State: in progress
+### Progress
+- Actual rank: 11.377
+- Problem solved: 95% 
 
 <p> <br> </p>
 

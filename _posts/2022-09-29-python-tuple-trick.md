@@ -4,20 +4,16 @@ title:  Common errors
 date:   2022-09-29
 description: A common list of common mistakes and bad understandings.
 tags: python
-categories: sample-posts
+categories: errors
 ---
 
+State: in progress
 
 <p> <br> </p>
 
-# Table of content
-
-* Tuple.
-* Dict.
-
 # Tuple
 
-## Definition
+### 1. Definition
 According to the Python documentation, a tuple is a number of values separated by commas and enclosed in parentheses. 
 
 E.g: Imagine we are a teacher that would like to represent students using a list of tuples containing their name, their age and their grades. Each individual tuple looks like the following:
@@ -29,7 +25,7 @@ E.g: Imagine we are a teacher that would like to represent students using a list
 
 <p> <br> </p>
 
-## Immutable lists ?
+### 2. Immutable lists ?
 
 We often think tuples as immutable lists. In fact, the immutability applies to the references contained in it. It implies that, if a tuple contains a mutable reference that is modified, the value is also changed inside the tuple.
 
@@ -52,7 +48,7 @@ Hint: the best way to know if a tuple is mutable or not is to try to hash it. If
 
 <p> <br> </p>
 
-## In-place operations
+### 3. In-place operations
 
 We know that tuples are immutable in references. A consequence is that we can not modify tuples in-place with "+=", "*=", etc. 
 

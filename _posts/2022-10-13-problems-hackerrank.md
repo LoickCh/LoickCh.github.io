@@ -1,18 +1,20 @@
 ---
 layout: post
-title:  HackerRank
+title:  HackerRank (Problems)
 date:   2022-10-13
 description: What did I learn solving everyday Hackerrank's algorithms challenges ?
 tags: algorithms
-categories: sample-posts
+categories: challenge
 ---
 
-State: in progress
+### Progress
+- Actual rank: 330.351
+- Points: 553/850.
 
-------
-# Training: try again
+### Training: try again
 
 - picking numbers: try to sort the list first.
+- non divisible subset: use modulos.
 
 <p> <br> </p>
 

@@ -4,7 +4,7 @@ title: Detectron & detectron2
 date:   2022-10-09
 description: Popular Python Meta Research github repository.
 tags: python
-categories: sample-posts
+categories: library
 ---
 
 # Detectron and Detectron 2

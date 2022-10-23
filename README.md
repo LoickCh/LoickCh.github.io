@@ -24,3 +24,11 @@ $ bundle exec jekyll serve
 ```bash
 $ sudo apt install imagemagick
 ```
+
+#### Mermaid diagrams
+
+Execute:
+$
+sudo npm config set puppeteer_skip_chromium_download true -g
+sudo npm install -g mermaid.cli
+$

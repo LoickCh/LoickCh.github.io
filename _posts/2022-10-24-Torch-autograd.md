@@ -36,7 +36,7 @@ Indeed, considering real function f and g such that
 $$f: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$ and 
 $$g: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ where 
 $$(n_0,n_1,n_2) \in \mathbb{N}^3$$. Then, if we consider the derivative of 
-$$y= f \circ g$$ on $$x \in \mathbb{R}^{n_0}$$, we have:
+$$y= g \circ f$$ on $$x \in \mathbb{R}^{n_0}$$, we have:
 
 $$\frac{\partial y}{\partial x}(x) = 
 \frac{\partial y}{\partial g}(g(x)).\frac{\partial g}{\partial f}(f(x)).\frac{\partial f}{\partial x}(x)$$
@@ -53,14 +53,21 @@ $$J_f=
 $$
 
 An important property is derived from the chain rule. 
+
 For any $$f: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ and 
-$$g: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$ two real functions:
+$$g: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$ two real functions, we have: 
 $$J_{f\circ g} = \underset{n_2 \times n_1}{J_{f}(g)}.\underset{n_1 \times n_0}{J_g}$$
 
 This implies that we can rewrite the Jacobian matrix of a composition as a product of two matrices. If we have a composition of several functions, we have a matrix product. However, the optimised way of calculating the matrix product is not always straightforward, it depends on the dimensions of the matrix. If we multiply matrices from right to left, we perform forward AD, otherwise if we multiply matrices from left to right, we perform backward AD.
 
 ### Example
-Let us calculate the gradient of a two layer MLP written as functions defined by $$h=f_3 \circ f_2 \circ f_1$$ where $$f_1: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$, $$f_2: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$, $$f_3: \mathbb{R}^{n_2} \rightarrow \mathbb{R}^{n_3}$$ such that $$\forall i \in \{1,2,3\}, \forall x\in \mathbb{R}^{n_{i-1}}, f_i(x)=x.W_i^T + b_i$$ where $$\forall i \in \{1,2,3\},  W_i:=(w_{k,p}^i)_{(k,p) \in [[1,...,n_i]] \times [[1,...,n_{i-1}]]} \in \mathbb{R}^{n_i \times n_{i-1}}, b_i\in \mathbb{R}^{n_i}$$.
+Let us calculate the gradient of a two layer MLP written as functions defined by $$h=f_3 \circ f_2 \circ f_1$$ where $$f_1: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$, $$f_2: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ and $$f_3: \mathbb{R}^{n_2} \rightarrow \mathbb{R}^{n_3}$$ such that:
+
+$$\forall i \in \{1,2,3\}, \forall x\in \mathbb{R}^{n_{i-1}}, f_i(x)=x.W_i^T + b_i$$
+
+Where: 
+
+$$\forall i \in \{1,2,3\},  W_i:=(w_{k,p}^i)_{(k,p) \in [[1,...,n_i]] \times [[1,...,n_{i-1}]]} \in \mathbb{R}^{n_i \times n_{i-1}}, b_i\in \mathbb{R}^{n_i}$$
 
 We have:
 
@@ -205,7 +212,7 @@ $$f(x)=x^2.sin(x)=(9+6.\epsilon).(sin(3)+cos(3)\epsilon)= 9.sin(3)+ (9.cos(3)+6.
 
 Hence, 
 
-$$f(3)=9.sin(3)$$ and $$f^{'}(3)=(9.cos(3)+6.sin(3))$$.
+$$f(3)=9.sin(3) \text{ and } f^{'}(3)=(9.cos(3)+6.sin(3))$$
 
 ### Example
 We use the same example as before and keep the notations of the official 
@@ -413,7 +420,14 @@ After profiling, we can print table in the terminal directly using a simple prin
 or after having grouped functions using *profiler.profile.key_averages*. Another
 intersting tools is to save a trace of the profiling and to load it later in: *chrome://tracing*
 
-![](../assets/img/Blog/2022-10-24/tracing.png)
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        {% include figure.html path="assets/img/Blog/2022-10-24/tracing.png" title="chrome://tracing visualisation" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    chrome://tracing visualisation
+</div>
 
 ---------------------------------
 Ressources:

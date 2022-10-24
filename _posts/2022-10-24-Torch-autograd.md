@@ -27,7 +27,7 @@ Torch.autograd performs automatic differentiation using two different modes:
 reverse mode and forward mode. 
 
 The popularity of reverse mode in deep learning comes from the fact that in general the
-input dimensionality is higher than the output dimensionality. But in a general case,
+input dimensionality is higher than the output dimensionality. But theorically,
 for any $$f: \mathbb{R}^n \rightarrow \mathbb{R}^m$$, the reverse mode should be
 used if and only if $$n>>m$$, otherwise if $$n<<m$$, forward mode is more performant.
 
@@ -41,8 +41,8 @@ $$y= g \circ f$$ on $$x \in \mathbb{R}^{n_0}$$, we have:
 $$\frac{\partial y}{\partial x}(x) = 
 \frac{\partial y}{\partial g}(g(x)).\frac{\partial g}{\partial f}(f(x)).\frac{\partial f}{\partial x}(x)$$
 
-In multi-dimensional space, we need to compute Jacobian matrix of different functions. 
-To recall, the Jacobian matrix of $$f: \mathbb{R}^n \rightarrow \mathbb{R}^m$$ is defined by:
+In multi-dimensional space, the analogy of derivatives
+is the Jacobian matrix defined for any $$f: \mathbb{R}^n \rightarrow \mathbb{R}^m$$ by:
 
 $$J_f=
 \begin{bmatrix}
@@ -52,13 +52,18 @@ $$J_f=
 \end{bmatrix}
 $$
 
-An important property is derived from the chain rule. 
-
-For any $$f: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ and 
-$$g: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$ two real functions, we have: 
+And the chain rule can be re-written, for any $$f: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ and 
+$$g: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$ two real functions, as: 
 $$J_{f\circ g} = \underset{n_2 \times n_1}{J_{f}(g)}.\underset{n_1 \times n_0}{J_g}$$
 
-This implies that we can rewrite the Jacobian matrix of a composition as a product of two matrices. If we have a composition of several functions, we have a matrix product. However, the optimised way of calculating the matrix product is not always straightforward, it depends on the dimensions of the matrix. If we multiply matrices from right to left, we perform forward AD, otherwise if we multiply matrices from left to right, we perform backward AD.
+This implies we can rewrite the Jacobian matrix of a composition as a product of 
+two matrices. If we have a composition of several functions, we have to calculate 
+a matrix product. 
+
+The optimised way of calculating the matrix product is not always straightforward, 
+it depends on the dimensions of the matrix. If we multiply matrices from right to 
+left, we perform forward AD, otherwise if we multiply matrices from left to right, 
+we perform backward AD.
 
 ### Example
 Let us calculate the gradient of a two layer MLP written as functions defined by $$h=f_3 \circ f_2 \circ f_1$$ where $$f_1: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$, $$f_2: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ and $$f_3: \mathbb{R}^{n_2} \rightarrow \mathbb{R}^{n_3}$$ such that:
@@ -67,7 +72,7 @@ $$\forall i \in \{1,2,3\}, \forall x\in \mathbb{R}^{n_{i-1}}, f_i(x)=x.W_i^T + b
 
 Where: 
 
-$$\forall i \in \{1,2,3\},  W_i:=(w_{k,p}^i)_{(k,p) \in [[1,...,n_i]] \times [[1,...,n_{i-1}]]} \in \mathbb{R}^{n_i \times n_{i-1}}, b_i\in \mathbb{R}^{n_i}$$
+$$\forall i \in \{1,2,3\},  W_i \in \mathbb{R}^{n_i \times n_{i-1}}, b_i\in \mathbb{R}^{n_i}$$
 
 We have:
 
@@ -88,7 +93,7 @@ J_{f_3}(f_2 \circ f_1(a)).J_{f_2}(f_1(a)).J_{f_1}(a) =
 W_3. W_2 . W_1
 $$
 
-So the Jacobian is the product of the three weight matrices. We can calculate it using from left to right (reverse mode) or from right to left (forward mode). 
+So the Jacobian is the product of the three weight matrices. We can calculate it using from left to right product (reverse mode) or from right to left product (forward mode). 
 
 ## Reverse mode
 
@@ -106,6 +111,48 @@ operations to go from inputs to outputs. It gives us a directed acyclic graph
 whose leaves are the input tensors and roots are the output tensors. The graph is 
 created in forward pass, while gradients are calculated in backward pass using
 the computation graph.
+
+One important thing to note is that intermediary results are saved during the 
+forward pass in order to execute the backward pass. Those intermediary tensors 
+can increase GPU memory consumption on training. 
+
+Let us see an example with a 
+simple linear layer. We use torchviz to visualize execution graphs and traces.
+This code must be launched in a notebook after having installed graphviz and torchviz.
+
+```
+sudo apt-get install graphviz   
+pip install torchviz
+```
+
+```python
+# Imports:
+import torch
+from torch import nn
+from torchviz import make_dot
+from collections import OrderedDict
+
+# Params
+in_f, out_f=16,2
+
+# Setup
+x=torch.arange(in_f, dtype=torch.float32, requires_grad=True)
+model=nn.Sequential(OrderedDict([ ('Lin1',nn.Linear(in_f,out_f)) ]) )
+
+y=model(x)
+make_dot(y.mean(), params=dict(model.named_parameters()), show_attrs=True, show_saved=True)
+```
+
+<figure>
+  <div class="row">
+    <div class="col">
+      <img src="{{ '/assets/img/notes/lecture-28/interoperability.png' | relative_url }}" />
+    </div>
+  </div>
+  <figcaption>
+    Inter-operability between diverse systems
+  </figcaption>
+</figure>
 
 ### Example:
 We continue the theorical example of the composition of three nested linear layers

@@ -54,6 +54,7 @@ $$
 
 And the chain rule can be re-written, for any $$f: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ and 
 $$g: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$ two real functions, as: 
+
 $$J_{f\circ g} = \underset{n_2 \times n_1}{J_{f}(g)}.\underset{n_1 \times n_0}{J_g}$$
 
 This implies we can rewrite the Jacobian matrix of a composition as a product of 
@@ -106,7 +107,7 @@ the Tensors we want the gradients for.
 
 ### Theory 
 
-To perform reverse AD, PyTorch records a computation graph containing all of the 
+To perform reverse AD, PyTorch records a computation graph containing all the 
 operations to go from inputs to outputs. It gives us a directed acyclic graph 
 whose leaves are the input tensors and roots are the output tensors. The graph is 
 created in forward pass, while gradients are calculated in backward pass using
@@ -120,7 +121,7 @@ Let us see an example with a
 simple linear layer. We use torchviz to visualize execution graphs and traces.
 This code must be launched in a notebook after having installed graphviz and torchviz.
 
-```
+```bash
 sudo apt-get install graphviz   
 pip install torchviz
 ```
@@ -136,23 +137,69 @@ from collections import OrderedDict
 in_f, out_f=16,2
 
 # Setup
-x=torch.arange(in_f, dtype=torch.float32, requires_grad=True)
+x=torch.arange(in_f, dtype=torch.float32)
 model=nn.Sequential(OrderedDict([ ('Lin1',nn.Linear(in_f,out_f)) ]) )
 
 y=model(x)
 make_dot(y.mean(), params=dict(model.named_parameters()), show_attrs=True, show_saved=True)
 ```
 
-<figure>
-  <div class="row">
-    <div class="col">
-      <img src="{{ '/assets/img/notes/lecture-28/interoperability.png' | relative_url }}" />
+<div class="row justify-content-md-center">
+    <div class="col-sm-4">
+        {% include figure.html path="assets/img/Blog/2022-10-24/output.png" class="img-fluid rounded z-depth-1"%}
     </div>
-  </div>
-  <figcaption>
-    Inter-operability between diverse systems
-  </figcaption>
-</figure>
+    <div class="col-sm">
+    <font color="blue"> Blue boxes:</font>
+    represent tensors requiring a gradient computation. We can see the linear weight matrix of shape 
+    (2,16) and the linear bias matrix of shape (2). <br> <br>
+    <font color="orange"> Orange boxes:</font>
+    represent intermediary tensors. Those are tensors saved during
+    the forward pass that enables to calculate gradients during the backward. <br> <br>
+    <font color="grey"> Grey boxes:</font>
+    minimal transformations and traces. Let us explain some boxes:
+    <ul>
+    <li><i> AccumulateGrad </i>: indicates that gradients need to be calculated. 
+    Since weight and bias matrices are encoded as nn.Parameter, they have requires_grad set to True
+    and appear in blue while the input has requires_grad set to False and does not appear;</li>
+    <li><i> TBackward0 </i>: refers to the transposed operation (W<sup>T</sup>);</li>
+    <li><i>MmBackward0</i>: refers to the matrix multiplication (x.W<sup>T</sup>);</li>
+    <li><i>AddBackward0</i>: refers to the addition (x.W<sup>T</sup> + b);</li>
+    </ul>
+    </div>
+</div>
+
+Intermediary tensors imply additional memory cost during training. It is one possible
+reason explaining why a model fit in memory during evaluation and not during training. 
+These intermediary results are packed during the forward pass (saved) and unpack 
+during the backward pass (when access to the tensor is required). 
+If we want to control the packing/ unpacking behaviour, we can use the 
+*torch.autograd.graph.saved_tensors_hooks()* context manager.
+
+```python
+# Call every time a tensor is saved: forward pass
+def pack_hook(x):
+    print(x)
+    print("Packing", x.shape)
+    return x
+
+# Call every time a tensor is accessed: backward pass
+def unpack_hook(x):
+    print("Unpacking", x.shape)
+    return x
+
+with torch.autograd.graph.saved_tensors_hooks(pack_hook, unpack_hook):
+    y=model(x) # Call pack_hook and defined unpack_hook
+y.mean().backward() # Call unpack_hook
+```
+
+If this feature is useful for debugging and adds modularity but what is more 
+interesting is to control wether the intermediary tensors are saved on the cpu or 
+on the GPU because very often, the tensors involved in the computation graph live 
+on GPU. Keeping a reference to those tensors in the graph is what causes most models 
+to run out of GPU memory during training while they would have done fine during evaluation. 
+If it is possible to do it using *pack_hook*, *unpack_hook*, PyTorch provides another
+context manager *torch.autograd.graph.save_on_cpu()*. During the forward pass, tensors
+will be stored on CPU, while during backward pass, they will be put to the GPU.
 
 ### Example:
 We continue the theorical example of the composition of three nested linear layers
@@ -477,9 +524,10 @@ intersting tools is to save a trace of the profiling and to load it later in: *c
 </div>
 
 ---------------------------------
-Ressources:
+# Ressources
 
 **Concepts:**
+- [AD](https://pytorch.org/docs/stable/autograd.html#)
 - [Understand AD](https://towardsdatascience.com/forward-mode-automatic-differentiation-dual-numbers-8f47351064bf)
 - [Understand AD (2)](https://math.stackexchange.com/questions/2195377/reverse-mode-differentiation-vs-forward-mode-differentiation-where-are-the-be)
 - [Mathematical aspects of AD](https://jingnanshi.com/blog/autodiff.html)
@@ -489,5 +537,6 @@ Ressources:
 - [AD mode time comparison](https://leimao.github.io/blog/PyTorch-Automatic-Differentiation/)
 
 **Notebooks:**
-- [AD Notebook](https://pytorch.org/tutorials/intermediate/forward_ad_usage.html)
-- [Autograd notebook](https://pytorch.org/docs/stable/notes/autograd.html#)
+- [AD](https://pytorch.org/tutorials/intermediate/forward_ad_usage.html)
+- [Autograd](https://pytorch.org/docs/stable/notes/autograd.html#)
+- [Autograd Hooks](https://pytorch.org/tutorials/intermediate/autograd_saved_tensors_hooks_tutorial.html)

@@ -8,8 +8,8 @@ categories: challenge
 ---
 
 ### Progress
-- Actual rank: 330.351
-- Points: 553/850.
+- Actual rank: 262.087
+- Points: 683/850.
 
 ### Training: try again
 

@@ -28,15 +28,15 @@ reverse mode and forward mode.
 
 The popularity of reverse mode in deep learning comes from the fact that in general the
 input dimensionality is higher than the output dimensionality. But in a general case,
-for any $f: \mathbb{R}^n \rightarrow \mathbb{R}^m$, the reverse mode should be
-used if and only if $n>>m$, otherwise if $n<<m$, forward mode is more performant.
+for any $$f: \mathbb{R}^n \rightarrow \mathbb{R}^m$$, the reverse mode should be
+used if and only if $$n>>m$$, otherwise if $$n<<m$$, forward mode is more performant.
 
 The reason behind is the order we multiply Jacobian matrices in the chain rule. 
 Indeed, considering real function f and g such that 
-$f: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$ and 
-$g: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$ where 
-$(n_0,n_1,n_2) \in \mathbb{N}^3$. Then, if we consider the derivative of 
-$y= f \circ g$ on $x \in \mathbb{R}^{n_0}$, we have:
+$$f: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$ and 
+$$g: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ where 
+$$(n_0,n_1,n_2) \in \mathbb{N}^3$. Then, if we consider the derivative of 
+$$y= f \circ g$$ on $$x \in \mathbb{R}^{n_0}$$, we have:
 
 $$\frac{\partial y}{\partial x}(x) = 
 \frac{\partial y}{\partial g}(g(x)).\frac{\partial g}{\partial f}(f(x)).\frac{\partial f}{\partial x}(x)$$
@@ -52,14 +52,14 @@ $$J_f=
 $$
 
 An important property is derived from the chain rule. 
-For any $f: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$ and 
-$g: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$ two real functions:
+For any $$f: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ and 
+$$g: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$ two real functions:
 $$J_{f\circ g} = \underset{n_2 \times n_1}{J_{f}(g)}.\underset{n_1 \times n_0}{J_g}$$
 
 This implies that we can rewrite the Jacobian matrix of a composition as a product of two matrices. If we have a composition of several functions, we have a matrix product. However, the optimised way of calculating the matrix product is not always straightforward, it depends on the dimensions of the matrix. If we multiply matrices from right to left, we perform forward AD, otherwise if we multiply matrices from left to right, we perform backward AD.
 
 ### Example
-Let us calculate the gradient of a two layer MLP written as functions defined by $h=f_3 \circ f_2 \circ f_1$ where $f_1: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$, $f_2: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$, $f_3: \mathbb{R}^{n_2} \rightarrow \mathbb{R}^{n_3}$ such that $\forall i \in \{1,2,3\}, \forall x\in \mathbb{R}^{n_{i-1}}, f_i(x)=x.W_i^T + b_i$ where $\forall i \in \{1,2,3\},  W_i:=(w_{k,p}^i)_{(k,p) \in [[1,...,n_i]] \times [[1,...,n_{i-1}]]} \in \mathbb{R}^{n_i \times n_{i-1}}, b_i\in \mathbb{R}^{n_i}$.
+Let us calculate the gradient of a two layer MLP written as functions defined by $$h=f_3 \circ f_2 \circ f_1$$ where $$f_1: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$, $$f_2: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$, $$f_3: \mathbb{R}^{n_2} \rightarrow \mathbb{R}^{n_3}$$ such that $$\forall i \in \{1,2,3\}, \forall x\in \mathbb{R}^{n_{i-1}}, f_i(x)=x.W_i^T + b_i$$ where $$\forall i \in \{1,2,3\},  W_i:=(w_{k,p}^i)_{(k,p) \in [[1,...,n_i]] \times [[1,...,n_{i-1}]]} \in \mathbb{R}^{n_i \times n_{i-1}}, b_i\in \mathbb{R}^{n_i}$$.
 
 We have:
 $$\forall i \in [[1,...n_0]], \frac{\partial f_1}{\partial x_i} = \frac{\partial x.W_{1}^{T}}{\partial x_i} = L_i^{*1}$$
@@ -106,11 +106,11 @@ Let us begin with "backward". According to the documentation, it
 computes the sum of gradients with respect to graph leaves. We note that it 
 has an argument called *grad_tensors* specifying the gradient of the output.
 It multiplies the result on the left by *grad_tensors*. If we note it *G*
-and $f$ the function we are calculating the jacobian, then the result will 
+and $$f$$ the function we are calculating the jacobian, then the result will 
 of *torch.autograd.backward* is: 
-$ G . J_f $
+$$ G . J_f $$
 
-For instance, if $G$ is equals to a tensor full of one, we have:
+For instance, if $$G$$ is equals to a tensor full of one, we have:
 
 $$ (1, ... , 1) . J_f = 
 \Big(\sum_{i=1}^{m} \frac{\partial f_i}{x_j} \Big)_{j \in \{1,...,n\}}$$
@@ -175,10 +175,10 @@ same pipeline, i.e create a computational graph and backpropagate. To implement
 forward AD, we need a bit of dual number theory.
 
 
-Let us write any dual number $x=a+b. \epsilon$ where $\epsilon^2=0$. When we apply, 
+Let us write any dual number $$x=a+b. \epsilon$$ where $$\epsilon^2=0$$. When we apply, 
 for any real function, the Taylor series on a dual number, we have: 
 $$f(a+b\epsilon)=\sum_{n=0}^{\infty} \frac{f^{(n)}(a) b^n \epsilon^n }{n!} = f(a)+b.f^{'}(a).\epsilon$$
-since $\epsilon^2=0$.
+since $$\epsilon^2=0$$.
 
 Hence, for any real function g, we have:
 $$f(g(x)) = f(g(a) + b.g^{'}(a)\epsilon)= f(g(a)) + b.g^{'}(a).f^{'}(g(a)).\epsilon$$
@@ -188,12 +188,12 @@ $$f(x).g(x)=(f(a)+b.f^{'}(a).\epsilon).(g(a)+b.g^{'}(a).\epsilon)=f(a).g(a) +
 (b.f^{'}(a).g(a)+f(a).b.g^{'}(a)).\epsilon$$
 
 The previous results are sufficient to calculate derivatives. For instance, if 
-$f: \mathbb{R} \rightarrow \mathbb{R}$ such that $\forall x \in \mathbb{R}, f(x)=x^2.sin(x)$.
+$$f: \mathbb{R} \rightarrow \mathbb{R}$$ such that $$\forall x \in \mathbb{R}, f(x)=x^2.sin(x)$$.
 If we want to calculate the derivative on 3, we do the following calculus:
 $$x=3+1.\epsilon, x^2=9+6.\epsilon, sin(x)=sin(3)+cos(3).\epsilon$$
 $$f(x)=x^2.sin(x)=(9+6.\epsilon).(sin(3)+cos(3)\epsilon)= 9.sin(3)+ (9.cos(3)+6.sin(3)). \epsilon$$
 
-Hence, $f(3)=9.sin(3)$ and $f^{'}(3)=(9.cos(3)+6.sin(3))$.
+Hence, $$f(3)=9.sin(3)$$ and $$f^{'}(3)=(9.cos(3)+6.sin(3))$$.
 
 ### Example
 We use the same example as before and keep the notations of the official 
@@ -201,9 +201,9 @@ introductory notebook: primal (input, previously "x") and
 tangent (input derivatives). Using the same
 notations as before, tangent *T* applies the following transformation 
 on the Jacobian: 
-$J_f . T$
+$$J_f . T$$
 
-Thus, if $T$ is equals to a tensor full of one, we have:
+Thus, if $$T$$ is equals to a tensor full of one, we have:
 
 $$ J_f . 
 \begin{pmatrix}

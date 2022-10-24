@@ -35,14 +35,15 @@ The reason behind is the order we multiply Jacobian matrices in the chain rule.
 Indeed, considering real function f and g such that 
 $$f: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$ and 
 $$g: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$ where 
-$$(n_0,n_1,n_2) \in \mathbb{N}^3$. Then, if we consider the derivative of 
+$$(n_0,n_1,n_2) \in \mathbb{N}^3$$. Then, if we consider the derivative of 
 $$y= f \circ g$$ on $$x \in \mathbb{R}^{n_0}$$, we have:
 
 $$\frac{\partial y}{\partial x}(x) = 
 \frac{\partial y}{\partial g}(g(x)).\frac{\partial g}{\partial f}(f(x)).\frac{\partial f}{\partial x}(x)$$
 
 In multi-dimensional space, we need to compute Jacobian matrix of different functions. 
-To recall, the Jacobian matrix of $f: \mathbb{R}^n \rightarrow \mathbb{R}^m$ is defined by:
+To recall, the Jacobian matrix of $$f: \mathbb{R}^n \rightarrow \mathbb{R}^m$$ is defined by:
+
 $$J_f=
 \begin{bmatrix}
 \frac{\partial f_1}{x_1} ... \frac{\partial f_1}{x_n} \\ 
@@ -62,9 +63,12 @@ This implies that we can rewrite the Jacobian matrix of a composition as a produ
 Let us calculate the gradient of a two layer MLP written as functions defined by $$h=f_3 \circ f_2 \circ f_1$$ where $$f_1: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_1}$$, $$f_2: \mathbb{R}^{n_1} \rightarrow \mathbb{R}^{n_2}$$, $$f_3: \mathbb{R}^{n_2} \rightarrow \mathbb{R}^{n_3}$$ such that $$\forall i \in \{1,2,3\}, \forall x\in \mathbb{R}^{n_{i-1}}, f_i(x)=x.W_i^T + b_i$$ where $$\forall i \in \{1,2,3\},  W_i:=(w_{k,p}^i)_{(k,p) \in [[1,...,n_i]] \times [[1,...,n_{i-1}]]} \in \mathbb{R}^{n_i \times n_{i-1}}, b_i\in \mathbb{R}^{n_i}$$.
 
 We have:
-$$\forall i \in [[1,...n_0]], \frac{\partial f_1}{\partial x_i} = \frac{\partial x.W_{1}^{T}}{\partial x_i} = L_i^{*1}$$
+
+$$
+\forall i \in [[1,...n_0]], \frac{\partial f_1}{\partial x_i} = \frac{\partial x.W_{1}^{T}}{\partial x_i} = L_i^{*1}$$
 
 Hence:
+
 $$
 J_{f_1}(a) = (L_1^{*1}, ..., L_{n_0}^{*1}) = 
 (C_1^{1}, ..., C_{n_0}^{1}) = W_1 \in \mathbb{R}^{n_1 \times n_0}
@@ -181,19 +185,27 @@ $$f(a+b\epsilon)=\sum_{n=0}^{\infty} \frac{f^{(n)}(a) b^n \epsilon^n }{n!} = f(a
 since $$\epsilon^2=0$$.
 
 Hence, for any real function g, we have:
+
 $$f(g(x)) = f(g(a) + b.g^{'}(a)\epsilon)= f(g(a)) + b.g^{'}(a).f^{'}(g(a)).\epsilon$$
 
 Moreover, we have for any real function f and g:
-$$f(x).g(x)=(f(a)+b.f^{'}(a).\epsilon).(g(a)+b.g^{'}(a).\epsilon)=f(a).g(a) + 
-(b.f^{'}(a).g(a)+f(a).b.g^{'}(a)).\epsilon$$
+
+$$
+f(x).g(x)=(f(a)+b.f^{'}(a).\epsilon).(g(a)+b.g^{'}(a).\epsilon)
+=f(a).g(a) + (b.f^{'}(a).g(a)+f(a).b.g^{'}(a)).\epsilon
+$$
 
 The previous results are sufficient to calculate derivatives. For instance, if 
 $$f: \mathbb{R} \rightarrow \mathbb{R}$$ such that $$\forall x \in \mathbb{R}, f(x)=x^2.sin(x)$$.
 If we want to calculate the derivative on 3, we do the following calculus:
+
 $$x=3+1.\epsilon, x^2=9+6.\epsilon, sin(x)=sin(3)+cos(3).\epsilon$$
+
 $$f(x)=x^2.sin(x)=(9+6.\epsilon).(sin(3)+cos(3)\epsilon)= 9.sin(3)+ (9.cos(3)+6.sin(3)). \epsilon$$
 
-Hence, $$f(3)=9.sin(3)$$ and $$f^{'}(3)=(9.cos(3)+6.sin(3))$$.
+Hence, 
+
+$$f(3)=9.sin(3)$$ and $$f^{'}(3)=(9.cos(3)+6.sin(3))$$.
 
 ### Example
 We use the same example as before and keep the notations of the official 

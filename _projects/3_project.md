@@ -13,9 +13,14 @@ category: work
 Several modern methods to reconstruct a 3D meshcan be grouped into two categories: those using implicit representations such as an occupancy functions or a signed distance functions and those using an hybrid representation (e.g solving the Poisson equation). We find out that these approaches allow to learn complex shapes and yield similar results on a specific class of the ShapeNet dataset.
 
 **Results:** You can find below the results obtained after training DeepSDF, Occupancy network and Shape as Points on the sofa category of ShapeNet. Details on the training and on the implementation can be found in the following <a href="/assets/pdf/Report_DeepSDF.pdf"> pdf. </a>
-<div class="row">
-    <div class="col-md-auto">
+
+<div class="row justify-content-md-center">
+    <div class="col-sm">
+    </div>
+    <div class="col-auto-4">
         {% include figure.html path="assets/img/RecVis/project_recvis_results.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+    </div>
+    <div class="col-sm">
     </div>
 </div>
 <div class="caption">

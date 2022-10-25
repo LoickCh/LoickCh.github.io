@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Torch module explained (torch.autograd)
-date:   2022-10-23
+date:   2022-10-24
 description: Exploring and explaining torch functionalities.
 tags: python
 categories: library
@@ -481,10 +481,14 @@ acting differently during training and evaluation (nn.Dropout, nn.BatchNorm2d)
 
 ## Profiling
 
-Profiling code is really important to find code bottlenecks, check GPU memory, 
-check CPU memory. PyTorch has implemented a profiler recording GPU and CPU events
+Profiling code is really important to optimize code, find bottlenecks, check GPU memory,
+check CPU memory, etc. PyTorch has implemented a profiler recording GPU and CPU events
 with a simple context manager *torch.autograd.profiler.profile()*. 
-It has many interesting arguments such as:
+Originally it was part of *torch.autograd* module since it deals with code
+optimisation. But, with PyTorch 1.8.1 release, the module
+is considered legacy and is deprecated in favour of *torch.profiler* module.
+
+Autograd profiler has many interesting arguments such as:
 - enabled: allows to enable or not profiling. It is useful so that we do not 
 have to comment on or uncomment the code, whether we want to profile it or not. 
 - use_cuda: enables timing of CUDA event. 
@@ -540,3 +544,6 @@ intersting tools is to save a trace of the profiling and to load it later in: *c
 - [AD](https://pytorch.org/tutorials/intermediate/forward_ad_usage.html)
 - [Autograd](https://pytorch.org/docs/stable/notes/autograd.html#)
 - [Autograd Hooks](https://pytorch.org/tutorials/intermediate/autograd_saved_tensors_hooks_tutorial.html)
+
+*News:*
+- [Profiler](https://pytorch.org/blog/introducing-pytorch-profiler-the-new-and-improved-performance-tool/)

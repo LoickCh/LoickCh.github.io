@@ -79,9 +79,13 @@ To find what is the fastest between listcomp and genexp, we use the timeit modul
 
 Impressively, the listcomp takes 50k times more times than the genexp to be build. To have a fair comparison, we compare both approaches using different object size. We obtain the following curve:
 
-<div class="row mt-1">
-    <div class="col-sm">
+<div class="row">
+    <div class="col">
+    </div>
+    <div class="col-6">
         {% include figure.html path="assets/img/Blog/2022-09-28/time_comparison.png" class="img-fluid rounded z-depth-1" %}
+    </div>
+    <div class="col">
     </div>
 </div>
 <div class="caption">
@@ -94,9 +98,13 @@ Impressively, the listcomp takes 50k times more times than the genexp to be buil
 
 In terms of memory, since the genexp generates only items on demand, it might be more memory efficient compared to listexp that creates every items. Let's check it now:
 
-<div class="row mt-1">
-    <div class="col-sm">
+<div class="row">
+    <div class="col">
+    </div>
+    <div class="col-6">
         {% include figure.html path="assets/img/Blog/2022-09-28/size_comparison.png" class="img-fluid rounded z-depth-1" %}
+    </div>
+    <div class="col">
     </div>
 </div>
 <div class="caption">
@@ -104,6 +112,7 @@ In terms of memory, since the genexp generates only items on demand, it might be
 </div>
 
 <p> <br> </p>
+
 ## 3. Conclusion
 
 It appears that genexps are both more memory and time efficient compare to listexp. However, fundamentally, they do not produce the same object: listcomps generate lists so they contain many usefull magic methods such as: \__getitem__, \__len__, etc. and genexps generate generators so they are adapted when we do not need to have acess at any time all the elements of the object.

@@ -2,7 +2,7 @@
 layout: page
 title: 3D semantic segmentation
 description: Adapt "KP-conv" to industrial facility point clouds.
-img: assets/img/IC/profile.jpg
+img: assets/img/IC/profile.png
 importance: 1
 category: work
 ---

@@ -2,7 +2,7 @@
 layout: page
 title: 3D object detection
 description: Reproduce the results of "Deep Hough Voting" on ScanNet and SUNRGB-D.
-img: assets/img/Npm3d/project_deephoughvoting.jpg
+img: assets/img/Npm3d/project_deephoughvoting.png
 importance: 1
 category: work
 ---

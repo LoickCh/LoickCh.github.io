@@ -2,7 +2,7 @@
 layout: page
 title: Correlate objects and their effects
 description: Reproduce the results of "Omnimatte" on the DAVIS dataset and on custom Youtube videos.
-img: assets/img/DeepL/project_omnimatte.jpg
+img: assets/img/DeepL/project_omnimatte.png
 importance: 1
 category: work
 ---

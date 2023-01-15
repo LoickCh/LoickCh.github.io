@@ -2,7 +2,7 @@
 layout: page
 title: 3D reconstruction
 description: Reproduce the results of various papers to reconstruct 3D meshes.
-img: assets/img/RecVis/project_recvis.jpg
+img: assets/img/RecVis/project_recvis.png
 importance: 1
 category: work
 ---

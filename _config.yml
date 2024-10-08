@@ -80,7 +80,7 @@ panelbear_analytics:  # panelbear analytics site ID (format: XXXXXXXXX)
 
 blog_name: Blog # blog_name will be displayed in your blog page
 blog_nav_title: blog # your blog must have a title for it to be displayed in the nav bar
-blog_description: Learn advices and tips to write Python code.
+blog_description: Interesting things I have learned.
 permalink: /blog/:year/:title/
 
 # Pagination

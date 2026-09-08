@@ -1,0 +1,9 @@
+---
+# Main SCSS file for Jekyll Blog
+# The dashes at the top are required for Jekyll to process the file
+---
+
+@charset "utf-8";
+
+// Import core styles and variables
+@import "variables", "themes", "layout", "base", "tables", "distill";

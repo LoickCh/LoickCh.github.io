@@ -1,0 +1,82 @@
+/*******************************************************************************
+ * Tables inside post and page content.
+ *
+ * Kramdown emits a bare <table> with no wrapper, so the table element itself
+ * has to be the scroll container. `display: block` + `width: max-content`
+ * makes it shrink to fit its content, which is what lets `margin: auto`
+ * actually centre it; `max-width: 100%` then clamps wide tables and turns on
+ * horizontal scrolling instead of overflowing the column.
+ ******************************************************************************/
+
+.post-content,
+.page-content .post {
+  table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 2rem auto;
+
+    border-collapse: collapse;
+    border-top: 2px solid var(--global-divider-color);
+    border-bottom: 2px solid var(--global-divider-color);
+
+    font-size: 0.95rem;
+    // Digits share a common advance width, so numeric columns line up
+    // without having to fall back to a monospace font.
+    font-variant-numeric: tabular-nums;
+
+    th,
+    td {
+      padding: 0.45rem 1.1rem;
+      border: none;
+      vertical-align: top;
+    }
+
+    thead th {
+      // Kramdown writes per-column alignment as an inline style, which wins
+      // over this; it is only the default for unaligned columns.
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+      border-bottom: 1.5px solid var(--global-divider-color);
+      color: var(--global-text-color);
+    }
+
+    td {
+      font-size: 0.95rem;
+      color: var(--global-text-color);
+    }
+
+    // Any column the author explicitly aligned is a numeric or flag column,
+    // so keep it on one line rather than letting it wrap mid-number.
+    th[style*="right"],
+    td[style*="right"],
+    th[style*="center"],
+    td[style*="center"] {
+      white-space: nowrap;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: var(--global-code-bg-color);
+    }
+
+    tbody tr:hover {
+      background-color: var(--global-divider-color);
+    }
+
+    code {
+      white-space: nowrap;
+    }
+  }
+
+  // Caption for the paragraph immediately following a table, tagged with
+  // `{:.table-caption}` in the markdown source.
+  .table-caption {
+    margin-top: -1.25rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--global-text-color-light);
+  }
+}

@@ -1,0 +1,26 @@
+_site
+.bundle
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+.DS_store
+.ruby-version
+.tweet-cache
+vendor
+node_modules
+assets/code/Torch/*
+_progress/
+temp/
+
+# Responsive variants produced by jekyll-imagemagick on every build.
+# Committing them makes Jekyll copy them AND imagemagick regenerate them,
+# which collides on the same destination path.
+assets/img/**/*-480.webp
+assets/img/**/*-800.webp
+assets/img/**/*-1400.webp
+
+# WIP CUDA blog -- renders locally, deliberately not published yet.
+# Drop these lines when the series is ready to go live.
+blog/
+_posts/
+assets/img/blog/cuda/
